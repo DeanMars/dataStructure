@@ -27,7 +27,7 @@ public class AvlTree<T extends Comparable> {
         if(node==null) return null;
         int result=t.compareTo(node.getElement());
         if(result<0){
-            node=remove(t,node.getLeft());
+            node.setLeft(remove(t,node.getLeft()));
             if(height(node.getLeft())-height(node.getRight())==2){
                 if(t.compareTo(node.getLeft().getElement())<0){
                     node=rotateWithLeftChild(node);
@@ -36,7 +36,7 @@ public class AvlTree<T extends Comparable> {
                 }
             }
         }else if(result>0){
-            node=remove(t,node.getRight());
+            node.setRight(remove(t,node.getRight()));
             if(height(node.getRight())-height(node.getLeft())==2){
                 if(t.compareTo(node.getRight().getElement())>0){
                     node=rotateWithRightChild(node);
@@ -46,17 +46,25 @@ public class AvlTree<T extends Comparable> {
             }
         }else{
             if(node.getRight()!=null&&node.getLeft()!=null){
-                T min=findMin(node.getRight()).getElement();
+                AvlNode<T> minNode=findMin(node.getRight());
+                boolean needRotate=(minNode==node.getRight()&&node.getRight().getRight()==null);
+                T min=minNode.getElement();
                 node.setElement(min);
                 node.setRight(remove(min,node.getRight()));
+                if(height(node.getLeft())-height(node.getRight())==2){
+                    if(needRotate){
+                        rotateWithLeftChild(node);
+                    }
+                }
             }else{
                 //该节点有0个或者1个子节点时
                 node = (node.getLeft() != null) ? node.getLeft() : node.getRight();
             }
 
         }
-
-        node.setHeight(Math.max(height(node.getLeft()),height(node.getRight()))+1);
+        if(node!=null) {
+            node.setHeight(Math.max(height(node.getLeft()), height(node.getRight())) + 1);
+        }
         return node;
     }
 
