@@ -1,3 +1,4 @@
 .idea/
 target/classes/com/dean/tree/bintree/binarysearchtree/BinaryNode.class
 target/
+dataStructure.iml
